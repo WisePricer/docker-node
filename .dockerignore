@@ -1,0 +1,11 @@
+.env*
+.git*
+.gitignore
+docker-compose*
+Dockerfile*
+log/*
+output*
+packer*
+README*
+reports/*
+tmp/*
