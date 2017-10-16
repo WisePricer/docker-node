@@ -6,7 +6,7 @@ MAINTAINER Steven Nemetz
 ###
 
 # Add all build commands here
-COPY ../.. /app
+COPY app/ /app
 RUN ls-lR
 
 ###
