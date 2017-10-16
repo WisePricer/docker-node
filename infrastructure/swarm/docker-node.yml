@@ -1,0 +1,31 @@
+version: '3.2'
+services:
+  docker-node:
+    image: "swarm.${ENV}.wiser.com:10080/${NAMESPACE}/${IMAGE}:${VERSION}"
+    networks:
+      - services
+      - default
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints:
+          - engine.labels.ig == services
+      #labels:
+      mode: replicated
+      replicas: 1
+      resources:
+        reservations:
+          #cpus: '2'
+          memory: '2G'
+        limits:
+          #cpus: '4'
+          memory: 4G
+    environment:
+      NODE_ENV: "${NODE_ENV}"
+networks:
+  default:
+    driver: overlay
+  services:
+    external:
+      name: base_services
