@@ -7,7 +7,8 @@ MAINTAINER Steven Nemetz
 
 # Add all build commands here
 COPY app/ /app
-RUN ls -lR /app
+RUN ls -l
+RUN ls -lR /app/
 
 ###
 ### Setup both static and dynamic build time metadata
