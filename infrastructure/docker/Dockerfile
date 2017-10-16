@@ -9,6 +9,7 @@ MAINTAINER Steven Nemetz
 COPY app/ /app
 RUN ls -l
 RUN ls -lR /app/
+RUN ls -lR /app/app/
 
 ###
 ### Setup both static and dynamic build time metadata
