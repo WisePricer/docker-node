@@ -3,9 +3,11 @@
 .gitignore
 docker-compose*
 Dockerfile*
-log/*
+log*
 output*
 packer*
 README*
-reports/*
-tmp/*
+reports
+**/tmp
+
+node_modules
