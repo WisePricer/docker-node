@@ -21,7 +21,7 @@ jobs:
             build_cause='circleCI'
             echo "URL: ${JENKINS_URL}"
             tcptraceroute -h || true
-            tcptraceroute jenkins.one.wiser.com
+            sudo tcptraceroute jenkins.one.wiser.com
             crumb=$(curl -s -u ${auth} ${JENKINS_URL}/crumbIssuer/api/xml?'xpath=concat(//crumbRequestField,":",//crumb)')
             echo "Crumb: $crumb"
             curl -X POST -H "${crumb}" "${JENKINS_URL}/job/${job_name}/build?token=${JENKINS_JOB_TOKEN}&cause=${build_cause}" \
