@@ -21,8 +21,9 @@ jobs:
             echo "Auth: $auth"
             build_cause='circleCI'
             echo "URL: ${JENKINS_URL}"
+            id
             tcptraceroute -h || true
-            tcptraceroute jenkins.one.wiser.com || true
+            sudo tcptraceroute jenkins.one.wiser.com 443 || true
             traceroute jenkins.one.wiser.com || true
             crumb=$(curl -s -u ${auth} ${JENKINS_URL}/crumbIssuer/api/xml?'xpath=concat(//crumbRequestField,":",//crumb)')
             echo "Crumb: $crumb"
