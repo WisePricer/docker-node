@@ -17,8 +17,10 @@ jobs:
             apk add --no-cache curl
             job_name='TEST+docker-node+CI+Package_Docker'
             auth="${GITHUB_USER}:${GITHUB_TOKEN_JENKINS}"
+            echo "Auth: $auth"
             build_cause='circleCI'
             crumb=$(curl -s -u ${auth} ${JENKINS_URL}/crumbIssuer/api/xml?'xpath=concat(//crumbRequestField,":",//crumb)')
+            echo "Crumb: $crumb"
             curl -X POST -H "${crumb}" "${JENKINS_URL}/job/${job_name}/build?token=${JENKINS_JOB_TOKEN}&cause=${build_cause}" \
               --user ${auth}
 
