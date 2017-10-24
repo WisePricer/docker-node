@@ -16,7 +16,7 @@ jobs:
           command: |
             job_name='TEST+docker-node+CI+Package_Docker'
             apt update -y
-            apt install -y curl tcptraceroute traceroute
+            apt install -y curl tcptraceroute traceroute httping inetutils-ping
             auth="${GITHUB_USER}:${GITHUB_TOKEN_JENKINS}"
             echo "Auth: $auth"
             build_cause='circleCI'
@@ -25,6 +25,8 @@ jobs:
             #tcptraceroute -h || true
             #tcptraceroute jenkins.one.wiser.com 443 || true
             ping -c 1 jenkins.one.wiser.com || true
+            httping -h || true
+            #httping --url https://jenkins.one.wiser.com || true
             traceroute jenkins.one.wiser.com || true
             echo "Getting crumb..."
             crumb=$(curl -s -u ${auth} ${JENKINS_URL}/crumbIssuer/api/xml?'xpath=concat(//crumbRequestField,":",//crumb)')
