@@ -1,6 +1,6 @@
 # Example Docker files for building NodeJS
 
-Used for testing CI workflows for: building, deployinh, cleanup, ...
+Used for testing CI workflows for: building, deploying, cleanup, ...
 
 
 

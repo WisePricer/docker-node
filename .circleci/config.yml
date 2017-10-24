@@ -1,0 +1,30 @@
+version: 2
+jobs:
+  unittest:
+    #working_directory: /tmp/image-resize-service
+    docker:
+      - image: docker:17.05.0-ce-git
+    steps:
+      - checkout
+      - run: echo "Initial testing should be here"
+  jenkins:
+    docker:
+      - image: docker:17.05.0-ce-git
+    steps:
+      - deploy:
+          name: Call Jenkins to continue workflow
+          command: |
+            job_name='TEST+docker-node+CI+Package_Docker'
+            auth="${GITHUB_USER}:${GITHUB_TOKEN_JENKINS}"
+            build_cause='circleCI'
+            crumb=$(curl -s -u ${auth} ${JENKINS_URL}/crumbIssuer/api/xml?'xpath=concat(//crumbRequestField,":",//crumb)')
+            curl -X POST -H "${crumb}" "${JENKINS_URL}/job/${job_name}/build?token=${JENKINS_JOB_TOKEN}&cause=${build_cause}" \
+              --user ${auth}
+
+workflows:
+  version: 2
+  node_workflow:
+    jobs:
+      - unittest
+      - jenkins:
+          context: org-global
