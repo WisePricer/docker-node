@@ -14,11 +14,13 @@ jobs:
       - deploy:
           name: Call Jenkins to continue workflow
           command: |
-            apk add --no-cache curl
             job_name='TEST+docker-node+CI+Package_Docker'
+            apk add --no-cache curl traceroute
             auth="${GITHUB_USER}:${GITHUB_TOKEN_JENKINS}"
             echo "Auth: $auth"
             build_cause='circleCI'
+            echo "URL: ${JENKINS_URL}"
+            traceroute jenkins.one.wiser.com
             crumb=$(curl -s -u ${auth} ${JENKINS_URL}/crumbIssuer/api/xml?'xpath=concat(//crumbRequestField,":",//crumb)')
             echo "Crumb: $crumb"
             curl -X POST -H "${crumb}" "${JENKINS_URL}/job/${job_name}/build?token=${JENKINS_JOB_TOKEN}&cause=${build_cause}" \
