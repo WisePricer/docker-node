@@ -1,15 +1,15 @@
 version: 2
 jobs:
-  unittest:
-    #working_directory: /tmp/image-resize-service
+  build:
+    working_directory: ~/repo
     docker:
-      - image: docker:17.05.0-ce-git
+      - image: docker:git
     steps:
       - checkout
       - run: echo "Initial testing should be here"
   jenkins:
     docker:
-      - image: docker:17.05.0-ce-git
+      - image: docker:git
     steps:
       - deploy:
           name: Call Jenkins to continue workflow
@@ -25,6 +25,6 @@ workflows:
   version: 2
   node_workflow:
     jobs:
-      - unittest
+      - build
       - jenkins:
           context: org-global
