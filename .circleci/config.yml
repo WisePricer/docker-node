@@ -28,7 +28,8 @@ jobs:
             #ping -c 1 jenkins.one.wiser.com || true
             httping --help || true
             httping --url https://jenkins.one.wiser.com -c 2 -s || true
-            traceroute jenkins.one.wiser.com || true
+            httping --url http://www.google.com -c 2 -s || true
+            #traceroute jenkins.one.wiser.com || true
             echo "Getting crumb..."
             crumb=$(curl -s -u ${auth} ${JENKINS_URL}/crumbIssuer/api/xml?'xpath=concat(//crumbRequestField,":",//crumb)')
             echo "Crumb: $crumb"
