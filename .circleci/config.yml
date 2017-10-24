@@ -16,7 +16,7 @@ jobs:
           command: |
             job_name='TEST+docker-node+CI+Package_Docker'
             apt update -y
-            apt install -y curl tcptraceroute traceroute httping inetutils-ping
+            apt install -y curl tcptraceroute traceroute httping inetutils-ping iproute2
             auth="${GITHUB_USER}:${GITHUB_TOKEN_JENKINS}"
             echo "Auth: $auth"
             build_cause='circleCI'
@@ -26,6 +26,9 @@ jobs:
             #tcptraceroute -h || true
             #tcptraceroute jenkins.one.wiser.com 443 || true
             #ping -c 1 jenkins.one.wiser.com || true
+            ip -h || true
+            ip a
+            ip r
             httping --help || true
             httping --url https://jenkins.one.wiser.com -c 2 -s || true
             httping --url http://www.google.com -c 2 -s || true
