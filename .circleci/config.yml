@@ -16,27 +16,34 @@ jobs:
           command: |
             job_name='TEST+docker-node+CI+Package_Docker'
             apt update -y
-            apt install -y curl tcptraceroute traceroute httping inetutils-ping iproute2
-            auth="${GITHUB_USER}:${GITHUB_TOKEN_JENKINS}"
-            echo "Auth: $auth"
+            apt install -y curl
+            #tcptraceroute traceroute httping inetutils-ping iproute2
+            #auth="${GITHUB_USER}:${GITHUB_TOKEN_JENKINS}"
+            #echo "Auth: $auth"
             build_cause='circleCI'
             echo "URL: ${JENKINS_URL}"
-            id
+            #id
             # Lack permissions to raw socket
             #tcptraceroute -h || true
             #tcptraceroute jenkins.one.wiser.com 443 || true
             #ping -c 1 jenkins.one.wiser.com || true
-            httping --help || true
-            httping --url https://jenkins.one.wiser.com -c 2 -s || true
-            httping --url http://www.google.com -c 2 -s || true
-            ip a
-            ip r
-            traceroute jenkins.one.wiser.com || true
-            echo "Getting crumb..."
-            crumb=$(curl -s -u ${auth} ${JENKINS_URL}/crumbIssuer/api/xml?'xpath=concat(//crumbRequestField,":",//crumb)')
-            echo "Crumb: $crumb"
-            curl -X POST -H "${crumb}" "${JENKINS_URL}/job/${job_name}/build?token=${JENKINS_JOB_TOKEN}&cause=${build_cause}" \
-              --user ${auth}
+            #httping --help || true
+            #httping --url https://jenkins.one.wiser.com -c 2 -s || true
+            #httping --url http://www.google.com -c 2 -s || true
+            #ip a
+            #ip r
+            #traceroute jenkins.one.wiser.com || true
+            #echo "Getting crumb..."
+            #crumb=$(curl -s -u ${auth} ${JENKINS_URL}/crumbIssuer/api/xml?'xpath=concat(//crumbRequestField,":",//crumb)')
+            #echo "Crumb: $crumb"
+            #curl -X POST -H "${crumb}" "${JENKINS_URL}/job/${job_name}/build?token=${JENKINS_JOB_TOKEN}&cause=${build_cause}" \
+            #  --user ${auth}
+              # https://vcrpqhe9k2.execute-api.us-west-2.amazonaws.com/CI
+              # job_name/job_token/cause
+              # /TEST+docker-node+CI+Package_Docker/HvaAlWP61WAQa30apx8l/ManTest
+              # x-api-key: tTRXPjGVTq79NtqTv5kEe26g2Yi6HMni4dUbyjYY
+            #curl -H "x-api-key: tTRXPjGVTq79NtqTv5kEe26g2Yi6HMni4dUbyjYY" https://vcrpqhe9k2.execute-api.us-west-2.amazonaws.com/CI/TEST+docker-node+CI+Package_Docker/HvaAlWP61WAQa30apx8l/ManTest
+            curl -H "x-api-key: ${JENKINS_API_KEY}" ${JENKINS_URL}${job_name}/${JENKINS_JOB_TOKEN}/${build_cause}
 
 workflows:
   version: 2
@@ -45,3 +52,5 @@ workflows:
       - build
       - jenkins:
           context: org-global
+          requires:
+            - build
