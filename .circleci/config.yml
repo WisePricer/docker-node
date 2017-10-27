@@ -14,9 +14,11 @@ jobs:
       - deploy:
           name: Call Jenkins to continue workflow
           command: |
-            job_name='TEST+docker-node+CI+Package_Docker'
+            #job_name='TEST+docker-node+CI+Package_Docker'
             echo "Repo URL: ${CIRCLE_REPOSITORY_URL}"
-            #job_name="TEST+${CIRCLE_JOB}+CI+Package_Docker"
+            repoBaseURL="${CIRCLE_REPOSITORY_URL%.*}"
+            repo="${repoBaseURL##*/}"
+            job_name="TEST+${repo}+CI+Package_Docker"
             # https://circleci.com/docs/2.0/env-vars/
             build_cause="${JENKINS_BUILD_CAUSE}%20by%20${CIRCLE_USERNAME}"
             apt update -y
