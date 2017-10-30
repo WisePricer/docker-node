@@ -8,6 +8,7 @@ Latest Tag|Release|Pre-Release|Commits since release
 ---|---|---|---
 [![tag](https://img.shields.io/github/tag/WisePricer/docker-node.svg?style=social&label=Tag)]() | [![release](https://img.shields.io/github/release/WisePricer/docker-node.svg?style=social&label=Release)]() | [![pre-release](https://img.shields.io/github/release/WisePricer/docker-node/all.svg?style=social&label=Pre-Release)]() | [![commits since release](https://img.shields.io/github/commits-since/WisePricer/docker-node/latest.svg?)]()
 
+[![Build Stats](https://buildstats.info/circleci/chart/WisePricer/docker-node)]()
 
 # Example Docker files for building NodeJS
 
