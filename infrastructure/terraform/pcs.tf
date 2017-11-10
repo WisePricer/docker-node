@@ -4,7 +4,7 @@ variable "env" {
 }
 
 module "service" {
-  source = "git@github.com:WisePricer/tf.git//wiser/service"
+  source = "git@github.com:WisePricer/tf.git?ref=workflow-changes//wiser/service"
   stack = "pcs"
   port = "3090"
   spot_price = "0.05"
