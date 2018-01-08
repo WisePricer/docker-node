@@ -10,14 +10,13 @@ jobs:
       - run: |
           mkdir -p workspace
           echo "${CIRCLE_BUILD_NUM}" > workspace/build_num
-          echo "${CIRCLE_BUILD_NUM}" > $CIRCLE_ARTIFACTS/build_num
       - persist_to_workspace:
           root: workspace
           paths:
             - build_num
       - store_artifacts:
           path: workspace
-          #destination: 
+          destination: workspace
   jenkins:
     docker:
       - image: circleci/python
