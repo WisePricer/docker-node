@@ -22,8 +22,7 @@ jobs:
           at: /tmp/workspace
       - run: echo 'export UPSTREAM_BUILD_NUM=$(cat /tmp/workspace/build_num)' >> $BASH_ENV
       - run: |
-          echo "Upstream build #: $(cat /tmp/workspace/build_num)"
-          echo "Upstream build # var: ${UPSTREAM_BUILD_NUM}"
+          echo "Upstream build #: ${UPSTREAM_BUILD_NUM}"
           echo "Current build #: ${CIRCLE_BUILD_NUM}"
       - deploy:
           name: Call Jenkins to continue workflow
