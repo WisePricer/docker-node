@@ -10,8 +10,12 @@ jobs:
           echo "Run ESLint"
           # Generate output (Formats: Checkstyle, JUnit)
           mkdir -p reports/junit
-          touch reports/junit/eslint.xml
-          touch reports/checkstyle.xml
+          cat <<EOF >reports/junit/eslint.xml
+          <?xml version="1.0" encoding="utf-8"?>
+          EOF
+          cat <<EOF >reports/checkstyle.xml
+          <?xml version="1.0" encoding="utf-8"?>
+          EOF
       - store_test_results:
           path: reports/junit
       - store_artifacts:
@@ -35,11 +39,17 @@ jobs:
           mkdir -p reports/junit reports/coverage/html
           ls -al reports
           cat <<EOF >reports/junit/unittests.xml
-          test
+          <?xml version="1.0" encoding="utf-8"?>
           EOF
-          touch reports/coverage/cobertura.xml
-          touch reports/coverage/clover.xml
-          touch reports/coverage/html/index.html
+          cat <<EOF >reports/coverage/cobertura.xml
+          <?xml version="1.0" encoding="utf-8"?>
+          EOF
+          cat <<EOF >reports/coverage/clover.xml
+          <?xml version="1.0" encoding="utf-8"?>
+          EOF
+          cat <<EOF >reports/coverage/html/index.html
+          <!doctype html>
+          EOF
       - store_test_results:
           path: reports/junit
       - store_artifacts:
@@ -58,16 +68,13 @@ jobs:
       - attach_workspace:
           at: /tmp/workspace
       - run: |
-          ls -1 /tmp/workspace/build_nums/*.num
           BUILD_NUMS=
           for num in $(ls -1 /tmp/workspace/build_nums/*.num); do
             BUILD_NUMS="${BUILD_NUMS},$(cat ${num})"
           done
           BUILD_NUMS=$(echo ${BUILD_NUMS} | cut -c2-)
           echo "export BUILD_NUMS=${BUILD_NUMS}" >> $BASH_ENV
-          #echo 'export UPSTREAM_BUILD_NUM=$(cat /tmp/workspace/build_num)' >> $BASH_ENV
       - run: |
-          #echo "Upstream build #: ${UPSTREAM_BUILD_NUM}"
           echo "Current build #: ${CIRCLE_BUILD_NUM}"
           echo "Prior build #: ${CIRCLE_PREVIOUS_BUILD_NUM}"
           echo "Artifact build #s: ${BUILD_NUMS}"
@@ -88,7 +95,7 @@ workflows:
       - eslint
       - build
       - jenkins:
-          context: org-global
+          # context: org-global
           requires:
             - build
             - eslint
