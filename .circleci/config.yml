@@ -58,9 +58,10 @@ jobs:
       - attach_workspace:
           at: /tmp/workspace
       - run: |
+          ls -1 /tmp/workspace/build_nums/*.num
           BUILD_NUMS=
-          for build in $(ls -1 /tmp/workspace/build_nums/*.num); do
-            BUILD_NUMS="${BUILD_NUMS},$(cat /tmp/workspace/build_nums/${build})"
+          for num in $(ls -1 /tmp/workspace/build_nums/*.num); do
+            BUILD_NUMS="${BUILD_NUMS},$(cat /tmp/workspace/build_nums/${num})"
           done
           BUILD_NUMS=$(echo ${BUILD_NUMS} | cut -c2-)
           echo "export BUILD_NUMS=${BUILD_NUMS}" >> $BASH_ENV
