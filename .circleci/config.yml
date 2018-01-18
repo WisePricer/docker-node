@@ -82,7 +82,7 @@ jobs:
           name: Call Jenkins to continue workflow
           command: |
             echo "Deploy: Artifact build #s: ${BUILD_NUMS}"
-            curl -sSL https://raw.githubusercontent.com/devops-workflow/aws-lambda-jenkins-proxy/master/integration-circleci-to-jenkins-2.sh | bash -x -s -- NAMESPACE
+            curl -sSL https://raw.githubusercontent.com/devops-workflow/aws-lambda-jenkins-proxy/master/integration-circleci-to-jenkins-2.sh | bash -x -s -- TEST
             # or
             #wget -qO- https://raw.githubusercontent.com/devops-workflow/aws-lambda-jenkins-proxy/master/integration-circleci-to-jenkins.sh | bash -s -- NAMESPACE
             # https://circleci.com/docs/2.0/env-vars/
