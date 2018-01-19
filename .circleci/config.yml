@@ -54,6 +54,7 @@ jobs:
           path: reports/junit
       - store_artifacts:
           path: reports
+          destination: /reports
       - run: |
           mkdir -p workspace/build_nums
           echo "${CIRCLE_BUILD_NUM}" > workspace/build_nums/${CIRCLE_STAGE}.num
