@@ -87,5 +87,5 @@ workflows:
       - jenkins:
           # context: org-global
           requires:
-            - unittests
             - eslint
+            - unittests
