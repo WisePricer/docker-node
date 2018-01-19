@@ -1,7 +1,7 @@
 version: 2
 jobs:
   eslint:
-    working_directory: ~/repo
+    working_directory: /tmp
     docker:
       - image: docker:git
     steps:
@@ -27,8 +27,8 @@ jobs:
           root: workspace
           paths:
             - build_nums
-  build:
-    working_directory: ~/repo
+  unittests:
+    working_directory: /tmp
     docker:
       - image: docker:git
     steps:
@@ -67,21 +67,9 @@ jobs:
     steps:
       - attach_workspace:
           at: /tmp/workspace
-      - run: |
-          BUILD_NUMS=
-          for num in $(ls -1 /tmp/workspace/build_nums/*.num); do
-            BUILD_NUMS="${BUILD_NUMS},$(cat ${num})"
-          done
-          BUILD_NUMS=$(echo ${BUILD_NUMS} | cut -c2-)
-          echo "export BUILD_NUMS=${BUILD_NUMS}" >> $BASH_ENV
-      - run: |
-          echo "Current build #: ${CIRCLE_BUILD_NUM}"
-          echo "Prior build #: ${CIRCLE_PREVIOUS_BUILD_NUM}"
-          echo "Artifact build #s: ${BUILD_NUMS}"
       - deploy:
           name: Call Jenkins to continue workflow
           command: |
-            echo "Deploy: Artifact build #s: ${BUILD_NUMS}"
             curl -sSL https://raw.githubusercontent.com/devops-workflow/aws-lambda-jenkins-proxy/master/integration-circleci-to-jenkins-2.sh | bash -x -s -- TEST
             # or
             #wget -qO- https://raw.githubusercontent.com/devops-workflow/aws-lambda-jenkins-proxy/master/integration-circleci-to-jenkins.sh | bash -s -- NAMESPACE
@@ -93,9 +81,9 @@ workflows:
   ci:
     jobs:
       - eslint
-      - build
+      - unittests
       - jenkins:
           # context: org-global
           requires:
-            - build
+            - unittests
             - eslint
