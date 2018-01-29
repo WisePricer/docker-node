@@ -44,15 +44,15 @@ jobs:
           <?xml version="1.0" encoding="utf-8"?>
           <testsuites name="UnitTests" tests="0" failures="0"></testsuites>
           EOF
-          cat <<EOF >reports/coverage/cobertura.xml
-          <?xml version="1.0" encoding="utf-8"?>
-          <!DOCTYPE coverage SYSTEM "http://cobertura.sourceforge.net/xml/coverage-04.dtd">
-          <coverage></coverage>
-          EOF
-          cat <<EOF >reports/coverage/clover.xml
-          <?xml version="1.0" encoding="utf-8"?>
-          <coverage clover="3.2.0"></coverage>
-          EOF
+          #cat <<EOF >reports/coverage/cobertura.xml
+          #<?xml version="1.0" encoding="utf-8"?>
+          #<!DOCTYPE coverage SYSTEM "http://cobertura.sourceforge.net/xml/coverage-04.dtd">
+          #<coverage></coverage>
+          #EOF
+          #cat <<EOF >reports/coverage/clover.xml
+          #<?xml version="1.0" encoding="utf-8"?>
+          #<coverage clover="3.2.0"></coverage>
+          #EOF
           cat <<EOF >reports/coverage/html/index.html
           <!doctype html>
           EOF
