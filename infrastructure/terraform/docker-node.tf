@@ -6,7 +6,8 @@ module "service" {
   key_name    = "${var.key_name}"
   stack       = "test-docker"
   dns_aliases = ["test-docker"]
-  port        = "3199"
+  #port        = "3199"
+  port        = "3200"
   min_instances = 1
   max_instances = 1
   notify      = "test-docker"
