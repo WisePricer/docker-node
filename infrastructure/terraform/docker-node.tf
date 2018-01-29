@@ -1,6 +1,6 @@
 
 module "service" {
-  source      = "git@github.com:WisePricer/tf.git//wiser/service"
+  source      = "git@github.com:WisePricer/tf.git?ref=lc-deps//wiser/service"
   env         = "${var.env}"
   repo        = "${var.docker_image_name}"
   key_name    = "${var.key_name}"

@@ -77,7 +77,7 @@ jobs:
       - deploy:
           name: Call Jenkins to continue workflow
           command: |
-            curl -sSL https://raw.githubusercontent.com/devops-workflow/aws-lambda-jenkins-proxy/master/integration-circleci-to-jenkins-2.sh | bash -x -s -- TEST
+            curl -sSL https://raw.githubusercontent.com/devops-workflow/aws-lambda-jenkins-proxy/master/integration-circleci-to-jenkins.sh | bash -x -s -- TEST
             # or
             #wget -qO- https://raw.githubusercontent.com/devops-workflow/aws-lambda-jenkins-proxy/master/integration-circleci-to-jenkins.sh | bash -s -- NAMESPACE
             # https://circleci.com/docs/2.0/env-vars/
@@ -90,7 +90,7 @@ workflows:
       - eslint
       - unittests
       - jenkins:
-          # context: org-global
+          context: org-global
           requires:
             - eslint
             - unittests
