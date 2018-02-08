@@ -31,7 +31,7 @@ pipeline {
           if (fileExists("${JENKINS_HOME}")) {
             NODE_HOME = "${JENKINS_HOME}"
           } else {
-            NODE_HOME = ("${WORKSPACE}" =~ /^(.*)\/workspace/)[0]
+            NODE_HOME = ("${WORKSPACE}" =~ /^(.*)\/workspace/)[0][1]
           }
           env.HOME = "${env.WORKSPACE}"
           env.NODE_HOME = "${NODE_HOME}"
