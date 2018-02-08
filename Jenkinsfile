@@ -1,5 +1,5 @@
 pipeline {
-  agent none
+  agent label "slave"
   options {
     ansiColor('xterm')
     buildDiscarder(logRotator(daysToKeepStr:'30', artifactNumToKeepStr:'3'))
@@ -23,7 +23,6 @@ pipeline {
   }
   stages {
     stage('Test setup data') {
-      agent { label "slave" }
       environment {
         STAGE = 'Test Setup'
       }
@@ -64,52 +63,45 @@ pipeline {
         }
       }
     }
-    stage('Docker Setup') {
-      parallel {
-        stage('ECR Repo setup') {
-          agent { label "slave" }
-          environment {
-            aws_RO_accounts = '830036458304,116821282425,763929378304'
-          }
-          steps {
-            sh  '''
-                set +x
-                echo "HOME = ${HOME}"
-                echo "NODE_HOME = ${NODE_HOME}"
-                echo "PATH = ${PATH}"
-                echo "ECR repo creation..."
-                echo "aws_region = ${AWS_DEFAULT_REGION}"
-                echo "aws_RO_accounts = ${aws_RO_accounts}"
-                echo "image_name = ${DOCKER_IMAGE_NAME}"
-                echo "namespace = ${DOCKER_IMAGE_NAMESPACE}"
-                '''
-            // Failing in ValidatingStringParameter, regex , NullPointerException
-            // All variables are set
-            //build(job: 'UTIL+ansible-playbook-ecr+CI+Build+ECR_Create',
-            //  parameters: [
-            //    [$class: 'ValidatingStringParameterValue', name: 'aws_region', value: "${AWS_DEFAULT_REGION}"],
-            //    [$class: 'ValidatingStringParameterValue', name: 'aws_RO_accounts', value: "${aws_RO_accounts}"],
-            //    [$class: 'ValidatingStringParameterValue', name: 'image_name', value: "${DOCKER_IMAGE_NAME}"],
-            //    [$class: 'ValidatingStringParameterValue', name: 'namespace', value: "${DOCKER_IMAGE_NAMESPACE}"]
-            //  ])
-            // Exactly from generator. Fails the same
-            //build job: 'UTIL+ansible-playbook-ecr+CI+Build+ECR_Create', parameters: [[$class: 'ValidatingStringParameterValue', name: 'aws_region', value: 'us-west-2'], [$class: 'ValidatingStringParameterValue', name: 'aws_RO_accounts', value: '830036458304,116821282425,763929378304'], [$class: 'ValidatingStringParameterValue', name: 'image_name', value: 'image'], [$class: 'ValidatingStringParameterValue', name: 'namespace', value: 'test']]
-          }
-        }
-        stage('Analyse Dockerfile') {
-          agent { label "slave" }
-          steps {
-            sh  '''
-                echo "Dockerfile analysis..."
-                echo "dockerfilePath = ${dockerfilePath}"
-                static-analysis-dockerfile-wrapper.sh
-                '''
-          }
-        }
+    stage('ECR Repo setup') {
+      environment {
+        aws_RO_accounts = '830036458304,116821282425,763929378304'
+      }
+      steps {
+        sh  '''
+            set +x
+            echo "HOME = ${HOME}"
+            echo "NODE_HOME = ${NODE_HOME}"
+            echo "PATH = ${PATH}"
+            echo "ECR repo creation..."
+            echo "aws_region = ${AWS_DEFAULT_REGION}"
+            echo "aws_RO_accounts = ${aws_RO_accounts}"
+            echo "image_name = ${DOCKER_IMAGE_NAME}"
+            echo "namespace = ${DOCKER_IMAGE_NAMESPACE}"
+            '''
+        // Failing in ValidatingStringParameter, regex , NullPointerException
+        // All variables are set
+        //build(job: 'UTIL+ansible-playbook-ecr+CI+Build+ECR_Create',
+        //  parameters: [
+        //    [$class: 'ValidatingStringParameterValue', name: 'aws_region', value: "${AWS_DEFAULT_REGION}"],
+        //    [$class: 'ValidatingStringParameterValue', name: 'aws_RO_accounts', value: "${aws_RO_accounts}"],
+        //    [$class: 'ValidatingStringParameterValue', name: 'image_name', value: "${DOCKER_IMAGE_NAME}"],
+        //    [$class: 'ValidatingStringParameterValue', name: 'namespace', value: "${DOCKER_IMAGE_NAMESPACE}"]
+        //  ])
+        // Exactly from generator. Fails the same
+        //build job: 'UTIL+ansible-playbook-ecr+CI+Build+ECR_Create', parameters: [[$class: 'ValidatingStringParameterValue', name: 'aws_region', value: 'us-west-2'], [$class: 'ValidatingStringParameterValue', name: 'aws_RO_accounts', value: '830036458304,116821282425,763929378304'], [$class: 'ValidatingStringParameterValue', name: 'image_name', value: 'image'], [$class: 'ValidatingStringParameterValue', name: 'namespace', value: 'test']]
+      }
+    }
+    stage('Analyse Dockerfile') {
+      steps {
+        sh  '''
+            echo "Dockerfile analysis..."
+            echo "dockerfilePath = ${dockerfilePath}"
+            static-analysis-dockerfile-wrapper.sh
+            '''
       }
     }
     stage('Build Docker') {
-      agent { label "slave" }
       steps {
         sh  '''
             echo 'Building docker image (setup)...'
@@ -145,7 +137,6 @@ pipeline {
     }
     //milestone 1
     stage('Deploy One'){
-      agent { label "slave" }
       environment {
         AWS = credentials('aws-one-jenkins')
         appEnv = 'One'
