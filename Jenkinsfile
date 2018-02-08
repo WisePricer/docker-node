@@ -64,9 +64,9 @@ pipeline {
         }
       }
     }
-    stage('Docker Building') {
+    stage('Docker Setup') {
       parallel {
-        stage('ECR Repo') {
+        stage('ECR Repo setup') {
           agent { label "slave" }
           environment {
             aws_RO_accounts = '830036458304,116821282425,763929378304'
@@ -106,27 +106,34 @@ pipeline {
                 '''
           }
         }
-        stage('Build Docker') {
-          agent { label "slave" }
-          steps {
-            sh  '''
-                echo 'Building docker image (setup)...'
-                build-docker-pre.sh
-                #VERSION=$(cat tmp/version)
-                venv=aws-cli
-                . source-python-virtual-env.sh
-                pyenv activate "${venv}"
-                dockerDir=$(cat tmp/dockerDir)
-                if [ $(grep -E 'COPY.*git_deploy' ${dockerDir}/Dockerfile | wc -l) -eq 1 ]; then
-                  aws s3 cp s3://wiser-one-github/git_deploy ${dockerDir}
-                fi
-                git-log-json.sh 10 > ${dockerDir}/version.json
-                echo "Building docker image (build)..."
-                build-docker.sh
-                rm -f ${dockerDir}/git_deploy
-                '''
-          }
-        }
+      }
+    }
+    stage('Build Docker') {
+      agent { label "slave" }
+      steps {
+        sh  '''
+            echo 'Building docker image (setup)...'
+            build-docker-pre.sh
+            venv=aws-cli
+            . source-python-virtual-env.sh
+            pyenv activate "${venv}"
+            dockerDir=$(cat tmp/dockerDir)
+            if [ $(grep -E 'COPY.*git_deploy' ${dockerDir}/Dockerfile | wc -l) -eq 1 ]; then
+              aws s3 cp s3://wiser-one-github/git_deploy ${dockerDir}
+            fi
+            git-log-json.sh 10 > ${dockerDir}/version.json
+            echo "Building docker image (build)..."
+            build-docker.sh
+            rm -f ${dockerDir}/git_deploy
+            '''
+        sh  '''
+            #Analyse Docker Image
+            static-analysis-docker-image-wrapper.sh
+            '''
+        sh  '''
+            #Upload Docker image to ECR
+            build-docker-push.sh
+            '''
       }
     }
     //milestone 1
