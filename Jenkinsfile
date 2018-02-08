@@ -18,6 +18,7 @@ pipeline {
     ARTIFACTORY_URL = 'https://quadanalytix.jfrog.io/quadanalytix'
     AWS_DEFAULT_REGION = 'us-west-2'
     AWS_REGION = "${AWS_DEFAULT_REGION}"
+    aws_region = "${AWS_DEFAULT_REGION}"
     dockerfilePath = 'infrastructure/docker/Dockerfile'
     //AWS = credentials('aws-one-jenkins') // Env: one
     //appEnv = 'One'
@@ -45,6 +46,7 @@ pipeline {
             echo "ARTIFACTORY_URL = ${ARTIFACTORY_URL}"
             echo "ARTIFACTORY_USR = ${ARTIFACTORY_USR}"
             echo "AWS_DEFAULT_REGION = ${AWS_DEFAULT_REGION}"
+            echo "AWS_REGION = ${AWS_REGION}"
             echo "dockerfilePath = ${dockerfilePath}"
             echo "HOME = ${HOME}"
             echo "NODE_HOME = ${NODE_HOME}"
@@ -70,6 +72,10 @@ pipeline {
     stage('ECR Repo setup') {
       environment {
         aws_RO_accounts = '830036458304,116821282425,763929378304'
+        // Slave's IAM role access or
+        //AWS = credentials('aws-one-jenkins')
+        //AWS_SECRET_KEY = "${AWS_PSW}"
+        //AWS_SECRET_ACCESS_KEY = "${AWS_USR}"
       }
       steps {
         sh  '''
