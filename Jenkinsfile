@@ -7,10 +7,10 @@ pipeline {
     timestamps()
   }
   parameters {
-    string( name: 'GIT_REF', description: 'Git reference to build from', defaultValue: '')
-    string( name: 'DOCKER_IMAGE_NAME', description: 'Docker image name', defaultValue: 'image')
-    string( name: 'DOCKER_IMAGE_NAMESPACE', description: 'Docker image namespace', defaultValue: 'test')
-    string( name: 'DOCKER_IMAGE_TAG', description: 'Docker image version tag', defaultValue: '')
+    //string( name: 'GIT_REF', description: 'Git reference to build from', defaultValue: '')
+    //string( name: 'DOCKER_IMAGE_NAME', description: 'Docker image name', defaultValue: 'image')
+    //string( name: 'DOCKER_IMAGE_NAMESPACE', description: 'Docker image namespace', defaultValue: 'test')
+    //string( name: 'DOCKER_IMAGE_TAG', description: 'Docker image version tag', defaultValue: '')
   }
   environment {
     TERRAFORM_CMD = 'docker run --network host " -w /app -v ${HOME}/.aws:/root/.aws -v ${HOME}/.ssh:/root/.ssh -v `pwd`:/app hashicorp/terraform:light'
@@ -20,16 +20,16 @@ pipeline {
     AWS_REGION = "${AWS_DEFAULT_REGION}"
     aws_region = "${AWS_DEFAULT_REGION}"
     dockerfilePath = 'infrastructure/docker/Dockerfile'
+    GIT_REF = "${GIT_COMMIT}"
     //AWS = credentials('aws-one-jenkins') // Env: one
     //appEnv = 'One'
   }
   stages {
     stage('Test setup data') {
-      environment {
-        STAGE = 'Test Setup'
-      }
       steps{
         script {
+          // Calc vars for parameters here or below
+          env.DOCKER_IMAGE_NAMESPACE = 'legacy'
           if (fileExists("${JENKINS_HOME}")) {
             NODE_HOME = "${JENKINS_HOME}"
           } else {
@@ -49,6 +49,10 @@ pipeline {
             echo "AWS_REGION = ${AWS_REGION}"
             echo "aws_region = ${aws_region}"
             echo "dockerfilePath = ${dockerfilePath}"
+            echo "DOCKER_IMAGE_NAME = ${DOCKER_IMAGE_NAME}"
+            echo "DOCKER_IMAGE_NAMESPACE = ${DOCKER_IMAGE_NAMESPACE}"
+            echo "DOCKER_IMAGE_TAG = ${DOCKER_IMAGE_TAG}"
+            echo "GIT_REF = ${GIT_REF}"
             echo "HOME = ${HOME}"
             echo "NODE_HOME = ${NODE_HOME}"
             echo "PATH = ${PATH}"
@@ -57,26 +61,25 @@ pipeline {
             #echo "AWS_PSW = ${AWS_PSW}"
             #echo "AWS_USR = ${AWS_USR}"
             #echo "appEnv = ${appEnv}"
+
             echo "Prepare for docker build..."
             export namespace="${DOCKER_IMAGE_NAMESPACE}"
             build-docker-pre.sh
             '''
         script {
-          echo 'Test groovy loop'
-          def browsers = ['chrome', 'firefox']
-          for (int i = 0; i < browsers.size(); ++i) {
-              echo "Testing the ${browsers[i]} browser"
-          }
+          env.DOCKER_IMAGE_TAG = new File('tmp/version').text
+          String dockerImage = new File('tmp/dockerImageName').text
+          env.DOCKER_IMAGE_NAME = ("${dockerImage}" =~ /^([a-z0-9]+)\/([a-z0-9]+)$)/)[0][2]
         }
+        sh  '''
+            echo "DOCKER_IMAGE_NAME = ${DOCKER_IMAGE_NAME}"
+            echo "DOCKER_IMAGE_TAG = ${DOCKER_IMAGE_TAG}"
+            '''
       }
     }
     stage('ECR Repo setup') {
       environment {
         aws_RO_accounts = '830036458304,116821282425,763929378304'
-        // Slave's IAM role access or
-        //AWS = credentials('aws-one-jenkins')
-        //AWS_SECRET_KEY = "${AWS_PSW}"
-        //AWS_SECRET_ACCESS_KEY = "${AWS_USR}"
       }
       steps {
         sh  '''
@@ -90,6 +93,7 @@ pipeline {
             echo "image_name = ${DOCKER_IMAGE_NAME}"
             echo "namespace = ${DOCKER_IMAGE_NAMESPACE}"
             '''
+        // This is working, but appears to break following stages (git ?)
         git 'https://github.com/devops-workflow/ansible-playbook-ecr.git'
         sh  '''
             set +x
