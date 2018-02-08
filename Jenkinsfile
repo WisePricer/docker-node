@@ -6,12 +6,12 @@ pipeline {
     timeout(time:180, unit:'MINUTES')
     timestamps()
   }
-  parameters {
+  //parameters {
     //string( name: 'GIT_REF', description: 'Git reference to build from', defaultValue: '')
     //string( name: 'DOCKER_IMAGE_NAME', description: 'Docker image name', defaultValue: 'image')
     //string( name: 'DOCKER_IMAGE_NAMESPACE', description: 'Docker image namespace', defaultValue: 'test')
     //string( name: 'DOCKER_IMAGE_TAG', description: 'Docker image version tag', defaultValue: '')
-  }
+  //}
   environment {
     TERRAFORM_CMD = 'docker run --network host " -w /app -v ${HOME}/.aws:/root/.aws -v ${HOME}/.ssh:/root/.ssh -v `pwd`:/app hashicorp/terraform:light'
     ARTIFACTORY = credentials('user-artifactory-reader')
