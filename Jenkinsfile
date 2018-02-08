@@ -96,6 +96,7 @@ pipeline {
             venv=ansible
             . source-python-virtual-env.sh
             pyenv activate "${venv}"
+            export aws_region="${AWS_DEFAULT_REGION}"
             ./run.sh
             '''
         // Failing in ValidatingStringParameter, regex , NullPointerException
