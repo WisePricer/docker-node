@@ -79,6 +79,7 @@ pipeline {
             echo "dockerfilePath = ${dockerfilePath}"
             echo "DOCKER_IMAGE_NAME = ${DOCKER_IMAGE_NAME}"
             echo "DOCKER_IMAGE_TAG = ${DOCKER_IMAGE_TAG}"
+            ls -al "${dockerfilePath}"
             '''
       }
     }
@@ -129,6 +130,7 @@ pipeline {
             set +x
             echo "Dockerfile analysis..."
             echo "dockerfilePath = ${dockerfilePath}"
+            ls -al "${dockerfilePath}"
             static-analysis-dockerfile-wrapper.sh
             '''
       }
