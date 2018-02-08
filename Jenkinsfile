@@ -97,6 +97,8 @@ pipeline {
             . source-python-virtual-env.sh
             pyenv activate "${venv}"
             export aws_region="${AWS_DEFAULT_REGION}"
+            export image_name="${DOCKER_IMAGE_NAME}"
+            export namespace="${DOCKER_IMAGE_NAMESPACE}"
             ./run.sh
             '''
         // Failing in ValidatingStringParameter, regex , NullPointerException
