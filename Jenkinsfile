@@ -101,7 +101,7 @@ pipeline {
           steps {
             sh  '''
                 echo "Dockerfile analysis..."
-                # Vars:
+                echo "dockerfilePath = ${dockerfilePath}"
                 static-analysis-dockerfile-wrapper.sh
                 '''
           }
