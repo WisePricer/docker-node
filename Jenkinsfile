@@ -17,6 +17,7 @@ pipeline {
     ARTIFACTORY = credentials('user-artifactory-reader')
     ARTIFACTORY_URL = 'https://quadanalytix.jfrog.io/quadanalytix'
     AWS_DEFAULT_REGION = 'us-west-2'
+    dockerDir = 'infrastructure/docker'
     //AWS = credentials('aws-one-jenkins') // Env: one
     //appEnv = 'One'
   }
@@ -99,6 +100,7 @@ pipeline {
           steps {
             sh  '''
                 echo "Dockerfile analysis..."
+                # Vars:
                 static-analysis-dockerfile-wrapper.sh
                 '''
           }
