@@ -53,13 +53,22 @@ pipeline {
       parallel {
         stage('ECR Repo') {
           agent { label "slave" }
+          environment {
+            aws_RO_accounts = '830036458304,116821282425,763929378304'
+          }
           steps {
             echo "ECR repo creation..."
             echo "aws_region = ${AWS_DEFAULT_REGION}"
-            echo "aws_RO_accounts = "
+            echo "aws_RO_accounts = ${aws_RO_accounts}"
             echo "image_name = ${DOCKER_IMAGE_NAME}"
             echo "namespace = ${DOCKER_IMAGE_NAMESPACE}"
-            //build job: 'UTIL+ansible-playbook-ecr+CI+Build+ECR_Create', parameters: [[$class: 'ValidatingStringParameterValue', name: 'aws_region', value: 'us-west-2'], [$class: 'ValidatingStringParameterValue', name: 'aws_RO_accounts', value: '123456789012'], [$class: 'ValidatingStringParameterValue', name: 'image_name', value: 'image'], [$class: 'ValidatingStringParameterValue', name: 'namespace', value: 'test']]
+            build job: 'UTIL+ansible-playbook-ecr+CI+Build+ECR_Create',
+              parameters: [
+                [$class: 'ValidatingStringParameterValue', name: 'aws_region', value: "${AWS_DEFAULT_REGION}"],
+                [$class: 'ValidatingStringParameterValue', name: 'aws_RO_accounts', value: "${aws_RO_accounts}"],
+                [$class: 'ValidatingStringParameterValue', name: 'image_name', value: "${DOCKER_IMAGE_NAME}"],
+                [$class: 'ValidatingStringParameterValue', name: 'namespace', value: "${DOCKER_IMAGE_NAMESPACE}"]
+              ]
           }
         }
         stage('Analyse Dockerfile') {
