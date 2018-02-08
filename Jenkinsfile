@@ -1,5 +1,5 @@
 pipeline {
-  agent { none }
+  agent none
   options {
     ansiColor('xterm')
     buildDiscarder(logRotator(daysToKeepStr:'30', artifactNumToKeepStr:'3'))
