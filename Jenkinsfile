@@ -65,6 +65,7 @@ pipeline {
             echo "Prepare for docker build..."
             export namespace="${DOCKER_IMAGE_NAMESPACE}"
             build-docker-pre.sh
+            ls -l tmp
             '''
         script {
           env.DOCKER_IMAGE_TAG = new File('tmp/version').text
