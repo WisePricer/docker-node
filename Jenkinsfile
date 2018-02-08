@@ -27,8 +27,21 @@ pipeline {
         STAGE = 'Test Setup'
       }
       steps{
+        script {
+          if (fileExists("${JENKINS_HOME}")) {
+            NODE_HOME = "${JENKINS_HOME}"
+          } else {
+            NODE_HOME = ("${WORKSPACE}" =~ /^(.*)\/workspace/)[0]
+          }
+          env.HOME = "${env.WORKSPACE}"
+          env.NODE_HOME = "${NODE_HOME}"
+          env.PATH = "${PATH}:${NODE_HOME}/bin"
+        }
         sh  '''
             set +x
+            echo "HOME = ${HOME}"
+            echo "NODE_HOME = ${NODE_HOME}"
+            echo "PATH = ${PATH}"
             echo "TERRAFORM_CMD = ${TERRAFORM_CMD}"
             echo "ARTIFACTORY = ${ARTIFACTORY}"
             echo "ARTIFACTORY_PSW = ${ARTIFACTORY_PSW}"
@@ -59,6 +72,9 @@ pipeline {
           steps {
             sh  '''
                 set +x
+                echo "HOME = ${HOME}"
+                echo "NODE_HOME = ${NODE_HOME}"
+                echo "PATH = ${PATH}"
                 echo "ECR repo creation..."
                 echo "aws_region = ${AWS_DEFAULT_REGION}"
                 echo "aws_RO_accounts = ${aws_RO_accounts}"
@@ -74,7 +90,8 @@ pipeline {
             //    [$class: 'ValidatingStringParameterValue', name: 'image_name', value: "${DOCKER_IMAGE_NAME}"],
             //    [$class: 'ValidatingStringParameterValue', name: 'namespace', value: "${DOCKER_IMAGE_NAMESPACE}"]
             //  ])
-            build job: 'UTIL+ansible-playbook-ecr+CI+Build+ECR_Create', parameters: [[$class: 'ValidatingStringParameterValue', name: 'aws_region', value: 'us-west-2'], [$class: 'ValidatingStringParameterValue', name: 'aws_RO_accounts', value: '830036458304,116821282425,763929378304'], [$class: 'ValidatingStringParameterValue', name: 'image_name', value: 'image'], [$class: 'ValidatingStringParameterValue', name: 'namespace', value: 'test']], wait: false
+            // Exactly from generator. Fails the same
+            //build job: 'UTIL+ansible-playbook-ecr+CI+Build+ECR_Create', parameters: [[$class: 'ValidatingStringParameterValue', name: 'aws_region', value: 'us-west-2'], [$class: 'ValidatingStringParameterValue', name: 'aws_RO_accounts', value: '830036458304,116821282425,763929378304'], [$class: 'ValidatingStringParameterValue', name: 'image_name', value: 'image'], [$class: 'ValidatingStringParameterValue', name: 'namespace', value: 'test']]
           }
         }
         stage('Analyse Dockerfile') {
@@ -82,6 +99,7 @@ pipeline {
           steps {
             sh  '''
                 echo "Dockerfile analysis..."
+                #static-analysis-dockerfile-wrapper.sh
                 '''
           }
         }
