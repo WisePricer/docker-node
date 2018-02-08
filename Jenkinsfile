@@ -69,7 +69,7 @@ pipeline {
             '''
         script {
           env.DOCKER_IMAGE_TAG = readFile "${env.WORKSPACE}/tmp/version"
-          String dockerImage = readFile "${env.WORKSPACE}/tmp/dockerImageName"
+          dockerImage = readFile "${env.WORKSPACE}/tmp/dockerImageName"
           env.DOCKER_IMAGE_NAME = ("${dockerImage}" =~ /^([a-z0-9]+)\/([a-z0-9]+)$)/)[0][2]
         }
         sh  '''
