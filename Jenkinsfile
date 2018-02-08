@@ -83,6 +83,14 @@ pipeline {
             echo "image_name = ${DOCKER_IMAGE_NAME}"
             echo "namespace = ${DOCKER_IMAGE_NAMESPACE}"
             '''
+        git 'https://github.com/devops-workflow/ansible-playbook-ecr.git'
+        sh  '''
+            set +x
+            venv=ansible
+            . source-python-virtual-env.sh
+            pyenv activate "${venv}"
+            ./run.sh
+            '''
         // Failing in ValidatingStringParameter, regex , NullPointerException
         // All variables are set
         //build(job: 'UTIL+ansible-playbook-ecr+CI+Build+ECR_Create',
