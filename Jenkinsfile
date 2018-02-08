@@ -9,7 +9,7 @@ pipeline {
   parameters {
     string( name: 'GIT_REF', description: 'Git reference to build from', defaultValue: '')
     string( name: 'DOCKER_IMAGE_NAME', description: 'Docker image name', defaultValue: 'image')
-    string( name: 'DOCKER_IMAGE_NAMESPACE', description: 'Docker image namespace', defaultValue: 'namespace')
+    string( name: 'DOCKER_IMAGE_NAMESPACE', description: 'Docker image namespace', defaultValue: 'test')
     string( name: 'DOCKER_IMAGE_TAG', description: 'Docker image version tag', defaultValue: '')
   }
   environment {
@@ -57,18 +57,23 @@ pipeline {
             aws_RO_accounts = '830036458304,116821282425,763929378304'
           }
           steps {
-            echo "ECR repo creation..."
-            echo "aws_region = ${AWS_DEFAULT_REGION}"
-            echo "aws_RO_accounts = ${aws_RO_accounts}"
-            echo "image_name = ${DOCKER_IMAGE_NAME}"
-            echo "namespace = ${DOCKER_IMAGE_NAMESPACE}"
-            build job: 'UTIL+ansible-playbook-ecr+CI+Build+ECR_Create',
+            sh  '''
+                set +x
+                echo "ECR repo creation..."
+                echo "aws_region = ${AWS_DEFAULT_REGION}"
+                echo "aws_RO_accounts = ${aws_RO_accounts}"
+                echo "image_name = ${DOCKER_IMAGE_NAME}"
+                echo "namespace = ${DOCKER_IMAGE_NAMESPACE}"
+                '''
+            // Failing in ValidatingStringParameter, regex , NullPointerException
+            // All variables are set
+            build(job: 'UTIL+ansible-playbook-ecr+CI+Build+ECR_Create',
               parameters: [
                 [$class: 'ValidatingStringParameterValue', name: 'aws_region', value: "${AWS_DEFAULT_REGION}"],
                 [$class: 'ValidatingStringParameterValue', name: 'aws_RO_accounts', value: "${aws_RO_accounts}"],
                 [$class: 'ValidatingStringParameterValue', name: 'image_name', value: "${DOCKER_IMAGE_NAME}"],
                 [$class: 'ValidatingStringParameterValue', name: 'namespace', value: "${DOCKER_IMAGE_NAMESPACE}"]
-              ]
+              ])
           }
         }
         stage('Analyse Dockerfile') {
