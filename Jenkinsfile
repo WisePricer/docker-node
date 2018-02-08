@@ -17,6 +17,7 @@ pipeline {
     ARTIFACTORY = credentials('user-artifactory-reader')
     ARTIFACTORY_URL = 'https://quadanalytix.jfrog.io/quadanalytix'
     AWS_DEFAULT_REGION = 'us-west-2'
+    AWS_REGION = "${AWS_DEFAULT_REGION}"
     dockerfilePath = 'infrastructure/docker/Dockerfile'
     //AWS = credentials('aws-one-jenkins') // Env: one
     //appEnv = 'One'
@@ -53,6 +54,8 @@ pipeline {
             #echo "AWS_PSW = ${AWS_PSW}"
             #echo "AWS_USR = ${AWS_USR}"
             #echo "appEnv = ${appEnv}"
+            echo "Prepare for docker build..."
+            build-docker-pre.sh
             '''
         script {
           echo 'Test groovy loop'
@@ -106,7 +109,6 @@ pipeline {
         sh  '''
             set +x
             echo 'Building docker image (setup)...'
-            build-docker-pre.sh
             venv=aws-cli
             . source-python-virtual-env.sh
             pyenv activate "${venv}"
