@@ -67,13 +67,14 @@ pipeline {
                 '''
             // Failing in ValidatingStringParameter, regex , NullPointerException
             // All variables are set
-            build(job: 'UTIL+ansible-playbook-ecr+CI+Build+ECR_Create',
-              parameters: [
-                [$class: 'ValidatingStringParameterValue', name: 'aws_region', value: "${AWS_DEFAULT_REGION}"],
-                [$class: 'ValidatingStringParameterValue', name: 'aws_RO_accounts', value: "${aws_RO_accounts}"],
-                [$class: 'ValidatingStringParameterValue', name: 'image_name', value: "${DOCKER_IMAGE_NAME}"],
-                [$class: 'ValidatingStringParameterValue', name: 'namespace', value: "${DOCKER_IMAGE_NAMESPACE}"]
-              ])
+            //build(job: 'UTIL+ansible-playbook-ecr+CI+Build+ECR_Create',
+            //  parameters: [
+            //    [$class: 'ValidatingStringParameterValue', name: 'aws_region', value: "${AWS_DEFAULT_REGION}"],
+            //    [$class: 'ValidatingStringParameterValue', name: 'aws_RO_accounts', value: "${aws_RO_accounts}"],
+            //    [$class: 'ValidatingStringParameterValue', name: 'image_name', value: "${DOCKER_IMAGE_NAME}"],
+            //    [$class: 'ValidatingStringParameterValue', name: 'namespace', value: "${DOCKER_IMAGE_NAMESPACE}"]
+            //  ])
+            build job: 'UTIL+ansible-playbook-ecr+CI+Build+ECR_Create', parameters: [[$class: 'ValidatingStringParameterValue', name: 'aws_region', value: 'us-west-2'], [$class: 'ValidatingStringParameterValue', name: 'aws_RO_accounts', value: '830036458304,116821282425,763929378304'], [$class: 'ValidatingStringParameterValue', name: 'image_name', value: 'image'], [$class: 'ValidatingStringParameterValue', name: 'namespace', value: 'test']], wait: false
           }
         }
         stage('Analyse Dockerfile') {
