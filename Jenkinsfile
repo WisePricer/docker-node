@@ -40,15 +40,16 @@ pipeline {
         }
         sh  '''
             set +x
+            echo "ARTIFACTORY = ${ARTIFACTORY}"
+            echo "ARTIFACTORY_PSW = ${ARTIFACTORY_PSW}"
+            echo "ARTIFACTORY_URL = ${ARTIFACTORY_URL}"
+            echo "ARTIFACTORY_USR = ${ARTIFACTORY_USR}"
+            echo "AWS_DEFAULT_REGION = ${AWS_DEFAULT_REGION}"
+            echo "dockerDir = ${dockerDir}"
             echo "HOME = ${HOME}"
             echo "NODE_HOME = ${NODE_HOME}"
             echo "PATH = ${PATH}"
             echo "TERRAFORM_CMD = ${TERRAFORM_CMD}"
-            echo "ARTIFACTORY = ${ARTIFACTORY}"
-            echo "ARTIFACTORY_PSW = ${ARTIFACTORY_PSW}"
-            echo "ARTIFACTORY_USR = ${ARTIFACTORY_USR}"
-            echo "ARTIFACTORY_URL = ${ARTIFACTORY_URL}"
-            echo "AWS_DEFAULT_REGION = ${AWS_DEFAULT_REGION}"
             #echo "AWS = ${AWS}"
             #echo "AWS_PSW = ${AWS_PSW}"
             #echo "AWS_USR = ${AWS_USR}"
