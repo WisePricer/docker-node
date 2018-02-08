@@ -70,7 +70,8 @@ pipeline {
         script {
           env.DOCKER_IMAGE_TAG = readFile "${env.WORKSPACE}/tmp/version"
           env.dockerImage = readFile "${env.WORKSPACE}/tmp/dockerImageName"
-          env.DOCKER_IMAGE_NAME = ("${dockerImage}" =~ /^([a-z0-9-]+)\/([a-z0-9-]+)$)/)[0][2]
+          //NODE_HOME = ("${WORKSPACE}" =~ /^(.*)\/workspace/)[0][1]
+          env.DOCKER_IMAGE_NAME = ("${env.dockerImage}" =~ /^([a-z0-9-]+)\/([a-z0-9-]+)$)/)[0][2]
         }
         sh  '''
             set +x
