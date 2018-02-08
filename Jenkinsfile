@@ -99,7 +99,7 @@ pipeline {
           steps {
             sh  '''
                 echo "Dockerfile analysis..."
-                #static-analysis-dockerfile-wrapper.sh
+                static-analysis-dockerfile-wrapper.sh
                 '''
           }
         }
