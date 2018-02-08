@@ -17,7 +17,7 @@ pipeline {
     ARTIFACTORY = credentials('user-artifactory-reader')
     ARTIFACTORY_URL = 'https://quadanalytix.jfrog.io/quadanalytix'
     AWS_DEFAULT_REGION = 'us-west-2'
-    dockerDir = 'infrastructure/docker'
+    dockerfilePath = 'infrastructure/docker/Dockerfile'
     //AWS = credentials('aws-one-jenkins') // Env: one
     //appEnv = 'One'
   }
@@ -45,7 +45,7 @@ pipeline {
             echo "ARTIFACTORY_URL = ${ARTIFACTORY_URL}"
             echo "ARTIFACTORY_USR = ${ARTIFACTORY_USR}"
             echo "AWS_DEFAULT_REGION = ${AWS_DEFAULT_REGION}"
-            echo "dockerDir = ${dockerDir}"
+            echo "dockerfilePath = ${dockerfilePath}"
             echo "HOME = ${HOME}"
             echo "NODE_HOME = ${NODE_HOME}"
             echo "PATH = ${PATH}"
