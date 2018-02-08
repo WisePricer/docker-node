@@ -70,9 +70,10 @@ pipeline {
         script {
           env.DOCKER_IMAGE_TAG = readFile "${env.WORKSPACE}/tmp/version"
           env.dockerImage = readFile "${env.WORKSPACE}/tmp/dockerImageName"
-          //env.DOCKER_IMAGE_NAME = ("${dockerImage}" =~ /^([a-z0-9]+)\/([a-z0-9]+)$)/)[0][2]
+          env.DOCKER_IMAGE_NAME = ("${dockerImage}" =~ /^([a-z0-9-]+)\/([a-z0-9-]+)$)/)[0][2]
         }
         sh  '''
+            set +x
             echo "dockerImage = ${dockerImage}"
             echo "DOCKER_IMAGE_NAME = ${DOCKER_IMAGE_NAME}"
             echo "DOCKER_IMAGE_TAG = ${DOCKER_IMAGE_TAG}"
