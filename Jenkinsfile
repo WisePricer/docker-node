@@ -1,5 +1,5 @@
 pipeline {
-  agent label "slave"
+  agent { label 'slave' }
   options {
     ansiColor('xterm')
     buildDiscarder(logRotator(daysToKeepStr:'30', artifactNumToKeepStr:'3'))
