@@ -109,7 +109,22 @@ pipeline {
         stage('Build Docker') {
           agent { label "slave" }
           steps {
-            echo 'Building docker image'
+            sh  '''
+                echo 'Building docker image (setup)...'
+                build-docker-pre.sh
+                #VERSION=$(cat tmp/version)
+                venv=aws-cli
+                . source-python-virtual-env.sh
+                pyenv activate "${venv}"
+                dockerDir=$(cat tmp/dockerDir)
+                if [ $(grep -E 'COPY.*git_deploy' ${dockerDir}/Dockerfile | wc -l) -eq 1 ]; then
+                  aws s3 cp s3://wiser-one-github/git_deploy ${dockerDir}
+                fi
+                git-log-json.sh 10 > ${dockerDir}/version.json
+                echo "Building docker image (build)..."
+                build-docker.sh
+                rm -f ${dockerDir}/git_deploy
+                '''
           }
         }
       }
