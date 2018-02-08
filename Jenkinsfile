@@ -3,7 +3,7 @@ pipeline {
   options {
     ansiColor('xterm')
     buildDiscarder(logRotator(daysToKeepStr:'30', artifactNumToKeepStr:'3'))
-    timeout(time:5, unit:'MINUTES')
+    timeout(time:180, unit:'MINUTES')
     timestamps()
   }
   parameters {
@@ -104,13 +104,12 @@ pipeline {
     stage('Build Docker') {
       steps {
         sh  '''
+            set +x
             echo 'Building docker image (setup)...'
             build-docker-pre.sh
-            set -x
             venv=aws-cli
             . source-python-virtual-env.sh
             pyenv activate "${venv}"
-            set +x
             dockerDir=$(cat tmp/dockerDir)
             if [ $(grep -E 'COPY.*git_deploy' ${dockerDir}/Dockerfile | wc -l) -eq 1 ]; then
               aws s3 cp s3://wiser-one-github/git_deploy ${dockerDir}
@@ -126,11 +125,10 @@ pipeline {
             '''
         sh  '''
             #Upload Docker image to ECR
-            set -x
+            set +x
             venv=aws-cli
             . source-python-virtual-env.sh
             pyenv activate "${venv}"
-            set +x
             build-docker-push.sh
             '''
       }
