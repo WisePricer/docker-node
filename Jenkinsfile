@@ -69,13 +69,14 @@ pipeline {
             '''
         script {
           env.DOCKER_IMAGE_TAG = readFile "${env.WORKSPACE}/tmp/version"
-          env.dockerImage = readFile "${env.WORKSPACE}/tmp/dockerImageName"
-          //NODE_HOME = ("${WORKSPACE}" =~ /^(.*)\/workspace/)[0][1]
-          env.DOCKER_IMAGE_NAME = ("${env.dockerImage}" =~ /^([a-z0-9-]+)\/([a-z0-9-]+)$/)[0][2]
+          dockerDir = readFile "${env.WORKSPACE}/tmp/dockerDir"
+          env.dockerfilePath = "${dockerDir}/Dockerfile"
+          dockerImage = readFile "${env.WORKSPACE}/tmp/dockerImageName"
+          env.DOCKER_IMAGE_NAME = ("${dockerImage}" =~ /^([a-z0-9-]+)\/([a-z0-9-]+)$/)[0][2]
         }
         sh  '''
             set +x
-            echo "dockerImage = ${dockerImage}"
+            echo "dockerfilePath = ${dockerfilePath}"
             echo "DOCKER_IMAGE_NAME = ${DOCKER_IMAGE_NAME}"
             echo "DOCKER_IMAGE_TAG = ${DOCKER_IMAGE_TAG}"
             '''
@@ -125,6 +126,7 @@ pipeline {
     stage('Analyse Dockerfile') {
       steps {
         sh  '''
+            set +x
             echo "Dockerfile analysis..."
             echo "dockerfilePath = ${dockerfilePath}"
             static-analysis-dockerfile-wrapper.sh
