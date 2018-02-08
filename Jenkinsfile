@@ -55,7 +55,7 @@ pipeline {
             #echo "AWS_USR = ${AWS_USR}"
             #echo "appEnv = ${appEnv}"
             echo "Prepare for docker build..."
-            namespace="${DOCKER_IMAGE_NAMESPACE}"
+            export namespace="${DOCKER_IMAGE_NAMESPACE}"
             build-docker-pre.sh
             '''
         script {
