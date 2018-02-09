@@ -202,12 +202,14 @@ pipeline {
           env.AWS_SECRET_ACCESS_KEY = "${AWS_PSW}"
           env.AWS_ACCESS_KEY_ID = "${AWS_USR}"
           env.appEnv = 'One'
+          env.TF_VAR_docker_image_name = "${DOCKER_IMAGE_NAME}"
+          env.TF_VAR_env = "${appEnv}"
         }
         withCredentials([sshUserPrivateKey(credentialsId: 'ssh-github-wiser-ci', keyFileVariable: 'SSH_KEY', passphraseVariable: '', usernameVariable: 'SSH_USER')]) {
           sh  '''
               export GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${SSH_KEY}"
-              export TF_VAR_docker_image_name=${DOCKER_IMAGE_NAME}
-              export TF_VAR_env=${appEnv}
+              #export TF_VAR_docker_image_name=${DOCKER_IMAGE_NAME}
+              #export TF_VAR_env=${appEnv}
               ls -la infrastructure/terraform/
               terraform-init-s3-service.sh wiser ${appEnv} ${DOCKER_IMAGE_NAME} upgrade
               #terraform_microservice_validate.sh . ${appEnv}
