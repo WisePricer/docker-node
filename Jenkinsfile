@@ -209,21 +209,21 @@ pipeline {
               rm -rf .ssh
               mkdir -p .ssh
               #chmod 7
-              cp -f "${SSH_KEY}" .ssh/github_key
+              #cp -f "${SSH_KEY}" .ssh/github_key
               #cat .ssh/github_key
-              chmod 600 .ssh/github_key
+              #chmod 600 .ssh/github_key
               cat <<SSH > .ssh/config
 Host github.com
   #User ${SSH_USER}
   IdentityFile .ssh/github_key
 SSH
-              chmod +r .ssh/config
+              #chmod +r .ssh/config
               ls -al .ssh
               echo "TF CMD: ${TERRAFORM_CMD}"
-              export GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+              export GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${SSH_KEY}"
               #rm -rf infrastructure/terraform/.terraform
               pwd
-              ls -lRa
+              #ls -lRa
               terraform-init-s3-service.sh wiser One ${DOCKER_IMAGE_NAME} upgrade
               terraform_microservice_validate.sh . One
               '''
