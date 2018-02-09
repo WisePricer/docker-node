@@ -39,7 +39,7 @@ pipeline {
           env.HOME = "${env.WORKSPACE}"
           env.NODE_HOME = "${NODE_HOME}"
           env.PATH = "${PATH}:${NODE_HOME}/bin"
-          env.TERRAFORM_CMD = "docker run --network host -w /app -v ${HOME}/.aws:/root/.aws -v ${HOME}/.ssh:/root/.ssh -v ${HOME}:/app hashicorp/terraform:${TERRAFORM_VERSION}"
+          env.TERRAFORM_CMD = "docker run --network host -w /app -v ${HOME}/.aws:/root/.aws -v ${HOME}/.ssh:/root/.ssh -v ${HOME}/infrastructure/terraform:/app hashicorp/terraform:${TERRAFORM_VERSION}"
         }
         sh  '''
             set +x
