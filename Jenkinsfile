@@ -39,7 +39,7 @@ pipeline {
           env.HOME = "${env.WORKSPACE}"
           env.NODE_HOME = "${NODE_HOME}"
           env.PATH = "${PATH}:${NODE_HOME}/bin"
-          env.TERRAFORM_CMD = "docker run --network host -w /app -v ${HOME}/.aws:/root/.aws -v ${HOME}/.ssh:/root/.ssh -v ${HOME}/infrastructure/terraform:/app hashicorp/terraform:${TERRAFORM_VERSION}"
+          //env.TERRAFORM_CMD = "docker run --network host -w /app -v ${HOME}/.aws:/root/.aws -v ${HOME}/.ssh:/root/.ssh -v ${HOME}/infrastructure/terraform:/app hashicorp/terraform:${TERRAFORM_VERSION}"
         }
         sh  '''
             set +x
@@ -198,6 +198,10 @@ pipeline {
         appEnv = 'One'
       }
       steps {
+        tool name: 'Terraform_0_11_1', type: 'com.cloudbees.jenkins.plugins.customtools.CustomTool'
+        script {
+          env.PATH = "${NODE_HOME}/tools/com.cloudbees.jenkins.plugins.customtools.CustomTool/Terraform_0_11_1:${PATH}"
+        }
         withCredentials([sshUserPrivateKey(credentialsId: 'ssh-github-wiser-ci', keyFileVariable: 'SSH_KEY', passphraseVariable: '', usernameVariable: 'SSH_USER')]) {
           sh  '''
               echo "SSH_USER = ${SSH_USER}"
@@ -209,7 +213,7 @@ pipeline {
               chmod 600 .ssh/github_key
               cat <<SSH > .ssh/config
 Host github.com
-  User ${SSH_USER}
+  #User ${SSH_USER}
   IdentityFile .ssh/github_key
 SSH
               chmod +r .ssh/config
