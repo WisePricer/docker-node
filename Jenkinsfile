@@ -245,7 +245,6 @@ pipeline {
         }
       }
     }
-  }
   post {
     always {
       pragprog displayLanguageCode: 'en', indicateBuildResult: true
