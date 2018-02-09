@@ -182,13 +182,13 @@ pipeline {
       }
     }
     //milestone 1
-    stage('Get terraform docker image') {
-      steps {
-        sh  """
-            docker pull hashicorp/terraform:${TERRAFORM_VERSION}
-            """
-      }
-    }
+//    stage('Get terraform docker image') {
+//      steps {
+//        sh  """
+//            docker pull hashicorp/terraform:${TERRAFORM_VERSION}
+//            """
+//      }
+//    }
     // Deploy one
     stage('One- Terraform init') {
       environment {
@@ -220,6 +220,7 @@ SSH
               ls -al .ssh
               echo "TF CMD: ${TERRAFORM_CMD}"
               export GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+              rm -rf infrastructure/terraform/.terraform
               pwd
               ls -lRa
               terraform-init-s3-service.sh wiser One ${DOCKER_IMAGE_NAME} upgrade
