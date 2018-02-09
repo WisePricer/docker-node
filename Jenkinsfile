@@ -194,39 +194,39 @@ pipeline {
     stage('One- Terraform init') {
       environment {
         AWS = credentials('aws-one-jenkins')
-        AWS_SECRET_ACCESS_KEY = "${AWS_PSW}"
-        AWS_ACCESS_KEY_ID = "${AWS_USR}"
-        appEnv = 'One'
       }
       steps {
         tool name: 'Terraform_0_11_1', type: 'com.cloudbees.jenkins.plugins.customtools.CustomTool'
         script {
           env.PATH = "${NODE_HOME}/tools/com.cloudbees.jenkins.plugins.customtools.CustomTool/Terraform_0_11_1:${PATH}"
+          env.AWS_SECRET_ACCESS_KEY = "${AWS_PSW}"
+          env.AWS_ACCESS_KEY_ID = "${AWS_USR}"
+          env.appEnv = 'One'
         }
         withCredentials([sshUserPrivateKey(credentialsId: 'ssh-github-wiser-ci', keyFileVariable: 'SSH_KEY', passphraseVariable: '', usernameVariable: 'SSH_USER')]) {
           sh  '''
               export GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${SSH_KEY}"
               export TF_VAR_docker_image_name=${DOCKER_IMAGE_NAME}
-              export TF_VAR_env=one
-              ls -lRa infrastructure/terraform
-              terraform-init-s3-service.sh wiser One ${DOCKER_IMAGE_NAME} upgrade
-              terraform_microservice_validate.sh . One
+              export TF_VAR_env=${appEnv}
+              ls -la infrastructure/terraform/
+              terraform-init-s3-service.sh wiser ${appEnv} ${DOCKER_IMAGE_NAME} upgrade
+              #terraform_microservice_validate.sh . ${appEnv}
               '''
         }
       }
     }
     stage('One- Terraform plan') {
-      environment {
-        AWS = credentials('aws-one-jenkins')
-        AWS_SECRET_ACCESS_KEY = "${AWS_PSW}"
-        AWS_ACCESS_KEY_ID = "${AWS_USR}"
-        appEnv = 'One'
-      }
+      //environment {
+      //  AWS = credentials('aws-one-jenkins')
+      //  AWS_SECRET_ACCESS_KEY = "${AWS_PSW}"
+      //  AWS_ACCESS_KEY_ID = "${AWS_USR}"
+      //  appEnv = 'One'
+      //}
       steps {
-        sh """
+        sh '''
            terraform version
-           terraform_microservice.sh ${terraform_command} One
-           """
+           terraform_microservice.sh plan ${appEnv}
+           '''
         script {
           timeout(time: 10, unit: 'MINUTES') {
             input(id: "Deploy Gate", message: "Deploy ${params.project_name}?", ok: 'Deploy')
