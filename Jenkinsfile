@@ -201,11 +201,12 @@ pipeline {
         withCredentials([sshUserPrivateKey(credentialsId: 'ssh-github-wiser-ci', keyFileVariable: 'SSH_KEY', passphraseVariable: '', usernameVariable: 'SSH_USER')]) {
           sh  '''
               echo "SSH_USER = ${SSH_USER}"
-              #mkdir -p .ssh
-              ls -l .ssh
-              cp "${SSH_KEY}" .ssh/github_key
+              rm -rf .ssh
+              mkdir -p .ssh
+              #chmod 7
+              cp -f "${SSH_KEY}" .ssh/github_key
               cat .ssh/github_key
-              chmod 400 .ssh/github_key
+              chmod 600 .ssh/github_key
               cat <<SSH >.ssh/config
               Host github.com
                 User ${SSH_USER}
