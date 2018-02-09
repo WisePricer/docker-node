@@ -181,15 +181,6 @@ pipeline {
       }
     }
     //milestone 1
-    stage('Deploy One'){
-      environment {
-        AWS = credentials('aws-one-jenkins')
-        appEnv = 'One'
-      }
-      steps {
-        echo "Deploying to ${appEnv}"
-      }
-    }
     stage('Get terraform docker image') {
       steps {
         sh  """
@@ -201,11 +192,14 @@ pipeline {
     stage('One- Terraform init') {
       environment {
         AWS = credentials('aws-one-jenkins')
+        AWS_SECRET_ACCESS_KEY = "${AWS_PSW}"
+        AWS_ACCESS_KEY_ID = "${AWS_USR}"
         appEnv = 'One'
       }
       steps {
         // withCredentials() {}
         sh """
+          echo "TF CMD: ${TERRAFORM_CMD}"
           export GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
           terraform-init-s3-service.sh wiser One ${DOCKER_IMAGE_NAME} upgrade
           terraform_microservice_validate.sh . One
@@ -215,6 +209,8 @@ pipeline {
     stage('One- Terraform plan') {
       environment {
         AWS = credentials('aws-one-jenkins')
+        AWS_SECRET_ACCESS_KEY = "${AWS_PSW}"
+        AWS_ACCESS_KEY_ID = "${AWS_USR}"
         appEnv = 'One'
       }
       steps {
@@ -231,6 +227,8 @@ pipeline {
     stage('One- Terraform apply') {
       environment {
         AWS = credentials('aws-one-jenkins')
+        AWS_SECRET_ACCESS_KEY = "${AWS_PSW}"
+        AWS_ACCESS_KEY_ID = "${AWS_USR}"
         appEnv = 'One'
       }
       steps {
