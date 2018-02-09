@@ -200,17 +200,16 @@ pipeline {
       steps {
         withCredentials([sshUserPrivateKey(credentialsId: 'ssh-github-wiser-ci', keyFileVariable: 'SSH_KEY', passphraseVariable: '', usernameVariable: 'SSH_USER')]) {
           sh  '''
-              # File path
-              echo "SSH_KEY = ${SSH_KEY}"
               echo "SSH_USER = ${SSH_USER}"
-              cat ${SSH_KEY}
-              echo "${SSH_USER}" > user
-              sed 's/i/I/' user
               mkdir .ssh
               cp "${SSH_KEY}" .ssh/github_key
+              cat .ssh/github_key
               chmod 400 .ssh/github_key
-              #cat <<SSH >.ssh/config
-              #SSH
+              cat <<SSH >.ssh/config
+              Host github.com
+                User ${SSH_USER}
+                IdentityFile .ssh/github_key
+              SSH
               echo "TF CMD: ${TERRAFORM_CMD}"
               export GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
               terraform-init-s3-service.sh wiser One ${DOCKER_IMAGE_NAME} upgrade
