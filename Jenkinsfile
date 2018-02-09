@@ -25,7 +25,7 @@ pipeline {
     //appEnv = 'One'
   }
   stages {
-    stage('Test setup data') {
+    stage('Setup: Initial') {
       steps{
         script {
           // Calc vars for parameters here or below
@@ -83,7 +83,7 @@ pipeline {
             '''
       }
     }
-    stage('ECR Repo setup') {
+    stage('Setup: ECR Repo') {
       environment {
         aws_RO_accounts = '830036458304,116821282425,763929378304'
       }
@@ -124,6 +124,15 @@ pipeline {
         //build job: 'UTIL+ansible-playbook-ecr+CI+Build+ECR_Create', parameters: [[$class: 'ValidatingStringParameterValue', name: 'aws_region', value: 'us-west-2'], [$class: 'ValidatingStringParameterValue', name: 'aws_RO_accounts', value: '830036458304,116821282425,763929378304'], [$class: 'ValidatingStringParameterValue', name: 'image_name', value: 'image'], [$class: 'ValidatingStringParameterValue', name: 'namespace', value: 'test']]
         git "${GIT_URL}"
       }
+    }
+    stage('Setup: Build') {
+      git "${GIT_URL}"
+      sh  '''
+          set +x
+          echo "Prepare for docker build..."
+          export namespace="${DOCKER_IMAGE_NAMESPACE}"
+          build-docker-pre.sh
+          '''
     }
     stage('Analyse Dockerfile') {
       steps {
