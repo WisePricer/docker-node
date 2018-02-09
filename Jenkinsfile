@@ -27,7 +27,7 @@ pipeline {
   stages {
     stage('Setup Initial') {
       steps{
-        cleanWs()
+        //cleanWs()
         script {
           // Calc vars for parameters here or below
           env.DOCKER_IMAGE_NAMESPACE = 'legacy'
