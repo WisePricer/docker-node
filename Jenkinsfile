@@ -125,13 +125,15 @@ pipeline {
       }
     }
     stage('Setup Build') {
-      git "${GIT_URL}"
-      sh  '''
-          set +x
-          echo "Prepare for docker build..."
-          export namespace="${DOCKER_IMAGE_NAMESPACE}"
-          build-docker-pre.sh
-          '''
+      steps {
+        git "${GIT_URL}"
+        sh  '''
+            set +x
+            echo "Prepare for docker build..."
+            export namespace="${DOCKER_IMAGE_NAMESPACE}"
+            build-docker-pre.sh
+            '''
+      }
     }
     stage('Analyse Dockerfile') {
       steps {
