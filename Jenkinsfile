@@ -208,6 +208,7 @@ pipeline {
               export GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i ${SSH_KEY}"
               export TF_VAR_docker_image_name=${DOCKER_IMAGE_NAME}
               export TF_VAR_env=one
+              ls -lRa infrastructure/terraform
               terraform-init-s3-service.sh wiser One ${DOCKER_IMAGE_NAME} upgrade
               terraform_microservice_validate.sh . One
               '''
