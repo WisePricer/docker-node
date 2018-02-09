@@ -159,12 +159,19 @@ pipeline {
             build-docker.sh
             rm -f ${dockerDir}/git_deploy
             '''
+      }
+    }
+    stage('Analyse Docker Image') {
+      steps {
         sh  '''
-            #Analyse Docker Image
+            set +x
             static-analysis-docker-image-wrapper.sh
             '''
+      }
+    }
+    stage('Upload Docker image to ECR') {
+      steps {
         sh  '''
-            #Upload Docker image to ECR
             set +x
             venv=aws-cli
             . source-python-virtual-env.sh
@@ -181,6 +188,61 @@ pipeline {
       }
       steps {
         echo "Deploying to ${appEnv}"
+      }
+    }
+    stage('Get terraform docker image') {
+      steps {
+        sh  """
+            docker pull hashicorp/terraform:0.11.2
+            """
+      }
+    }
+    // Deploy one
+    stage('One- Terraform init') {
+      environment {
+        AWS = credentials('aws-one-jenkins')
+        appEnv = 'One'
+      }
+      steps {
+        // withCredentials() {}
+        sh """
+          export GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+          terraform-init-s3-service.sh wiser One ${DOCKER_IMAGE_NAME} upgrade
+          terraform_microservice_validate.sh . One
+          """
+      }
+    }
+    stage('One- Terraform plan') {
+      environment {
+        AWS = credentials('aws-one-jenkins')
+        appEnv = 'One'
+      }
+      steps {
+        sh """
+           terraform_microservice.sh ${terraform_command} One
+           """
+        script {
+          timeout(time: 10, unit: 'MINUTES') {
+            input(id: "Deploy Gate", message: "Deploy ${params.project_name}?", ok: 'Deploy')
+          }
+        }
+      }
+    }
+    stage('One- Terraform apply') {
+      environment {
+        AWS = credentials('aws-one-jenkins')
+        appEnv = 'One'
+      }
+      steps {
+        // lock false ??
+        sh  """
+            . terraform_microservice_stackname.sh
+            export GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+            #terraform-init-s3-service.sh wiser One ${DOCKER_IMAGE_NAME} upgrade
+            terraform_microservice.sh apply One
+            # ${TERRAFORM_CMD} apply -lock=false -input=false tfplan
+            """
+        }
       }
     }
   }
