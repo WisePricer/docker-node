@@ -13,7 +13,7 @@ pipeline {
     //string( name: 'DOCKER_IMAGE_TAG', description: 'Docker image version tag', defaultValue: '')
   //}
   environment {
-    TERRAFORM_CMD = 'docker run --network host -w /app -v ${HOME}/.aws:/root/.aws -v ${HOME}/.ssh:/root/.ssh -v `pwd`:/app hashicorp/terraform:light'
+    TERRAFORM_VERSION = '0.11.2'
     ARTIFACTORY = credentials('user-artifactory-reader')
     ARTIFACTORY_URL = 'https://quadanalytix.jfrog.io/quadanalytix'
     AWS_DEFAULT_REGION = 'us-west-2'
@@ -39,6 +39,7 @@ pipeline {
           env.HOME = "${env.WORKSPACE}"
           env.NODE_HOME = "${NODE_HOME}"
           env.PATH = "${PATH}:${NODE_HOME}/bin"
+          env.TERRAFORM_CMD = "docker run --network host -w /app -v ${HOME}/.aws:/root/.aws -v ${HOME}/.ssh:/root/.ssh -v `pwd`:/app hashicorp/terraform:${TERRAFORM_VERSION}"
         }
         sh  '''
             set +x
@@ -184,7 +185,7 @@ pipeline {
     stage('Get terraform docker image') {
       steps {
         sh  """
-            docker pull hashicorp/terraform:0.11.2
+            docker pull hashicorp/terraform:${TERRAFORM_VERSION}
             """
       }
     }
