@@ -208,10 +208,10 @@ pipeline {
             #cat .ssh/github_key
             chmod 600 .ssh/github_key
             cat <<SSH >.ssh/config
-            Host github.com
-              User ${SSH_USER}
-              IdentityFile .ssh/github_key
-            SSH
+Host github.com
+  User ${SSH_USER}
+  IdentityFile .ssh/github_key
+SSH
             echo "TF CMD: ${TERRAFORM_CMD}"
             export GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
             terraform-init-s3-service.sh wiser One ${DOCKER_IMAGE_NAME} upgrade
