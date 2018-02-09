@@ -13,7 +13,7 @@ pipeline {
     //string( name: 'DOCKER_IMAGE_TAG', description: 'Docker image version tag', defaultValue: '')
   //}
   environment {
-    TERRAFORM_CMD = 'docker run --network host " -w /app -v ${HOME}/.aws:/root/.aws -v ${HOME}/.ssh:/root/.ssh -v `pwd`:/app hashicorp/terraform:light'
+    TERRAFORM_CMD = 'docker run --network host -w /app -v ${HOME}/.aws:/root/.aws -v ${HOME}/.ssh:/root/.ssh -v `pwd`:/app hashicorp/terraform:light'
     ARTIFACTORY = credentials('user-artifactory-reader')
     ARTIFACTORY_URL = 'https://quadanalytix.jfrog.io/quadanalytix'
     AWS_DEFAULT_REGION = 'us-west-2'
