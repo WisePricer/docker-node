@@ -195,11 +195,16 @@ pipeline {
         AWS = credentials('aws-one-jenkins')
         AWS_SECRET_ACCESS_KEY = "${AWS_PSW}"
         AWS_ACCESS_KEY_ID = "${AWS_USR}"
+        SSH_GITHUB= credentials('ssh-github-wiser-ci')
         appEnv = 'One'
       }
       steps {
         // withCredentials() {}
+        // TODO: Need github ssh key
         sh """
+          mkdir .ssh
+          echo "${SSH_GITHUB}" > .ssh/github_key
+          chmod 400 .ssh/github_key
           echo "TF CMD: ${TERRAFORM_CMD}"
           export GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
           terraform-init-s3-service.sh wiser One ${DOCKER_IMAGE_NAME} upgrade
