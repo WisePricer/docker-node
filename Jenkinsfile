@@ -30,6 +30,7 @@ pipeline {
         script {
           // Calc vars for parameters here or below
           env.DOCKER_IMAGE_NAMESPACE = 'legacy'
+          env.namespace = "${DOCKER_IMAGE_NAMESPACE}"
           if (fileExists("${JENKINS_HOME}")) {
             NODE_HOME = "${JENKINS_HOME}"
           } else {
