@@ -195,7 +195,7 @@ pipeline {
         AWS = credentials('aws-one-jenkins')
         AWS_SECRET_ACCESS_KEY = "${AWS_PSW}"
         AWS_ACCESS_KEY_ID = "${AWS_USR}"
-        SSH_GITHUB= credentials('ssh-github-wiser-ci')
+        SSH_GITHUB = credentials('ssh-github-wiser-ci')
         appEnv = 'One'
       }
       steps {
