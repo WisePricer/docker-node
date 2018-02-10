@@ -201,7 +201,7 @@ pipeline {
           env.PATH = "${NODE_HOME}/tools/com.cloudbees.jenkins.plugins.customtools.CustomTool/Terraform_0_11_1:${PATH}"
           env.AWS_SECRET_ACCESS_KEY = "${AWS_PSW}"
           env.AWS_ACCESS_KEY_ID = "${AWS_USR}"
-          env.appEnv = 'One'
+          env.appEnv = 'one'
           env.TF_VAR_docker_image_name = "${DOCKER_IMAGE_NAME}"
           env.TF_VAR_env = "${appEnv}"
         }
@@ -237,19 +237,13 @@ pipeline {
       }
     }
     stage('One- Terraform apply') {
-      environment {
-        AWS = credentials('aws-one-jenkins')
-        AWS_SECRET_ACCESS_KEY = "${AWS_PSW}"
-        AWS_ACCESS_KEY_ID = "${AWS_USR}"
-        appEnv = 'One'
-      }
       steps {
         // lock false ??
         sh  """
             . terraform_microservice_stackname.sh
             export GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
-            #terraform-init-s3-service.sh wiser One ${DOCKER_IMAGE_NAME} upgrade
-            terraform_microservice.sh apply One
+            #terraform-init-s3-service.sh wiser ${appEnv} ${DOCKER_IMAGE_NAME} upgrade
+            terraform_microservice.sh apply ${appEnv}
             # ${TERRAFORM_CMD} apply -lock=false -input=false tfplan
             """
         }
