@@ -231,7 +231,7 @@ pipeline {
            '''
         script {
           timeout(time: 10, unit: 'MINUTES') {
-            input(id: "Deploy Gate", message: "Deploy ${DOCKER_IMAGE_NAME}? to ${appEnv}", ok: 'Deploy')
+            input(id: "Deploy Gate", message: "Deploy ${DOCKER_IMAGE_NAME} to ${appEnv}?", ok: 'Deploy')
           }
         }
       }
