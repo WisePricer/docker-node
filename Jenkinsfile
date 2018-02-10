@@ -231,7 +231,7 @@ pipeline {
            '''
         script {
           timeout(time: 10, unit: 'MINUTES') {
-            input(id: "Deploy Gate", message: "Deploy ${params.project_name}?", ok: 'Deploy')
+            input(id: "Deploy Gate", message: "Deploy ${DOCKER_IMAGE_NAME}? to ${appEnv}", ok: 'Deploy')
           }
         }
       }
@@ -239,13 +239,11 @@ pipeline {
     stage('One- Terraform apply') {
       steps {
         // lock false ??
-        sh  """
+        sh  '''
             . terraform_microservice_stackname.sh
-            export GIT_SSH_COMMAND="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
-            #terraform-init-s3-service.sh wiser ${appEnv} ${DOCKER_IMAGE_NAME} upgrade
             terraform_microservice.sh apply ${appEnv}
             # ${TERRAFORM_CMD} apply -lock=false -input=false tfplan
-            """
+            '''
         }
       }
     }
